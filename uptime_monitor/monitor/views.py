@@ -5,7 +5,7 @@ from .models import Site,Check
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
-from .test_check import check
+from . services import run_check
 # Create your views here.
 @api_view(['GET','POST'])
 def site_view(request):
@@ -30,20 +30,10 @@ def site_view(request):
 # “run a check right now for site X and save the result.”
 def check_site(request,id):
     # build a check for site whos id = id
-
-        site = Site.objects.get(id=id)
-        result = check(site.url)
-        check_obj = Check.objects.create(site=site,
-                                         status = result['status'],
-                                         status_code = result.get('status_code',None),
-                                         response_time_ms=result.get('response_time_ms',None),
-                                         error = result.get('error',"NO Errors Found"))
-
-
-        serializer = CheckSerializer(check_obj)
-
-        
-        return Response(serializer.data,status=status.HTTP_201_CREATED)
+    site = Site.objects.get(id=id)
+    obj = run_check(site)
+    serializer = CheckSerializer(obj)
+    return Response(serializer.data,status=status.HTTP_201_CREATED)
 
 @api_view(['GET'])  
 def check_history(request,id):
