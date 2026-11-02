@@ -10,7 +10,7 @@ class Command(BaseCommand):
                 run_check(site)
                 checked+=1
             except Exception:
-                self.stderr.write(f"Failed to check {site.name}")
+                self.stdout.write(f"Checked {checked} sites")
 
     
 
