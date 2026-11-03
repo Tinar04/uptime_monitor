@@ -129,7 +129,7 @@ The scheduler calls `run_check` directly, so it does not need the web server to 
 
 ## Roadmap
 
-- Pause/resume and delete endpoints
+
 - Uptime percentage and average response time
 - Cleanup of old checks (retention policy)
 - User login, so each user has their own sites
