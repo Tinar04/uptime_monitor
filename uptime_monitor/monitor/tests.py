@@ -1,3 +1,11 @@
-from django.test import TestCase
+from rest_framework.test import APITestCase
 
-# Create your tests here.
+class SiteTests(APITestCase):
+
+    def test_add_site(self):
+        response = self.client.post(
+            '/sites/',
+            {"name": "Test", "url": "https://example.com"},
+            format='json'
+        )
+        self.assertEqual(response.status_code, 201)

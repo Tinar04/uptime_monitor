@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
 from . services import run_check
+from django.shortcuts import get_object_or_404
 # Create your views here.
 @api_view(['GET','POST'])
 def site_view(request):
@@ -30,17 +31,14 @@ def site_view(request):
 # “run a check right now for site X and save the result.”
 def check_site(request,id):
     # build a check for site whos id = id
-    site = Site.objects.get(id=id)
+    site = get_object_or_404(Site,id=id)
     obj = run_check(site)
     serializer = CheckSerializer(obj)
     return Response(serializer.data,status=status.HTTP_201_CREATED)
 
 @api_view(['GET'])  
 def check_history(request,id):
-    try:
-        site = Site.objects.get(id=id)
-    except Site.DoesNotExist:
-        return Response({"message": "Site not found"}, status=status.HTTP_404_NOT_FOUND)
+    site = get_object_or_404(Site,id=id)
 
     checks  = site.checks.order_by('-checked_at')
     serializer = CheckSerializer(checks,many=True)
@@ -48,10 +46,8 @@ def check_history(request,id):
 
 @api_view(['PATCH','DELETE'])
 def site_detail(request,id):
-    try:
-        site = Site.objects.get(id=id)
-    except Site.DoesNotExist:
-        return Response({"Message":"Site Not Found"},status=status.HTTP_404_NOT_FOUND)
+    site = get_object_or_404(Site,id=id)
+
     if request.method == 'PATCH':
         serializer = SiteSerializer(site,data = request.data,partial = True)
         if serializer.is_valid():
