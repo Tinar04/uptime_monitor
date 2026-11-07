@@ -7,6 +7,8 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from . services import run_check
 from django.shortcuts import get_object_or_404
+from django.db.models import Avg
+
 # Create your views here.
 @api_view(['GET','POST'])
 def site_view(request):
@@ -61,10 +63,24 @@ def site_detail(request,id):
         site.delete()
         response_data = {"Message":"Site delete succefully"}
         return Response(response_data,status=status.HTTP_200_OK)
+@api_view(['GET'])
+def stats_view(request, id):
+    site = get_object_or_404(Site,id=id)
 
+    total_checks = site.checks.count()
+    up_checks = site.checks.filter(status='UP').count()
+    uptime_percent = round(up_checks / total_checks * 100, 2) if total_checks > 0 else 0
+    avg = site.checks.aggregate(Avg('response_time_ms'))['response_time_ms__avg']
+    avg_response_time = round(avg, 2) if avg is not None else 0
 
+    stats = {
+    "total_checks": total_checks,
+    "up_checks": up_checks,
+    "uptime_percent": uptime_percent,
+    "avg_response_ms": avg_response_time,
+    }
+    return Response(stats, status=status.HTTP_200_OK)
 
-        
 
 
 
