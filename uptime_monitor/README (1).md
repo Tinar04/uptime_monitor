@@ -51,6 +51,7 @@ The API is now available at `http://127.0.0.1:8000/`.
 | GET | `/sites/` | List all sites |
 | POST | `/sites/<id>/check/` | Run a check now and save the result |
 | GET | `/sites/<id>/history/` | Show saved checks for a site (newest first) |
+| GET	|`/sites/<id>/stats/`	|Total checks, UP checks, uptime %, average response time|
 
 ### Add a site
 
