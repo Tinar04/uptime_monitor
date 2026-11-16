@@ -43,6 +43,9 @@ def check_history(request,id):
     site = get_object_or_404(Site,id=id)
 
     checks  = site.checks.order_by('-checked_at')
+    status_filter = request.query_params.get('status')
+    if status_filter:
+        checks = checks.filter(status=status_filter.upper())
     serializer = CheckSerializer(checks,many=True)
     return Response(serializer.data,status=status.HTTP_200_OK)
 
