@@ -107,6 +107,8 @@ Automatic checking is split into small pieces:
 | `monitor/services.py` | `run_check(site)` calls `check` and saves a `Check` row |
 | `monitor/views.py` | API views; the manual check endpoint calls `run_check` |
 | `monitor/management/commands/run_checks.py` | Loops over all active sites and calls `run_check` for each |
+|`monitor/management/command/cleanup_checks`| deletes checks older than 30 days,scheduled daily|
+
 
 Run one round of checks by hand:
 
