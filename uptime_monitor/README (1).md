@@ -8,9 +8,11 @@ A Django REST API that watches websites, checks them automatically every 5 minut
 - Manual "check now" for any site
 - Automatic checks for all active sites via a custom Django management command
 - Stores status (UP/DOWN), HTTP status code, response time (ms), and error message for every check
-- Check history per site, newest first
+- Check history per site, newest first and with status filter
+- A daily cleanup with old checks
 - Pause a site without losing its history (`is_active` flag)
 - One failing site never stops the rest of the round (per-site error handling)
+- Stats:uptime % and average response time
 
 ## Tech Stack
 
@@ -50,7 +52,7 @@ The API is now available at `http://127.0.0.1:8000/`.
 | POST | `/sites/` | Add a site to monitor |
 | GET | `/sites/` | List all sites |
 | POST | `/sites/<id>/check/` | Run a check now and save the result |
-| GET | `/sites/<id>/history/` | Show saved checks for a site (newest first) |
+| GET | `/sites/<id>/check/history/?status=DOWN` |History, optionally filtered by status (UP or DOWN) |
 | GET	|`/sites/<id>/stats/`	|Total checks, UP checks, uptime %, average response time|
 
 ### Add a site
@@ -131,10 +133,6 @@ The scheduler calls `run_check` directly, so it does not need the web server to 
 - **Check:** `site` (foreign key), `status`, `status_code`, `response_time_ms`, `checked_at`, `error`
 
 ## Roadmap
-
-
-- Uptime percentage and average response time
-- Cleanup of old checks (retention policy)
 - User login, so each user has their own sites
 - Email / Telegram alerts when a site goes DOWN
 - Public status page
